@@ -1,1 +1,1 @@
-# GoIT React HW 04 (Phonebook)
+# GoIT React HW 06 (Phonebook)
