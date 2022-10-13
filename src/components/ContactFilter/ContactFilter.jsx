@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { updateFilterValue } from 'redux/filterSlice';
+import { getFilterValue, updateFilterValue } from 'redux/filterSlice';
 import { theme } from 'constants/theme';
 import {
   FilterContainer,
@@ -8,7 +8,7 @@ import {
 } from './ContactFilter.styled';
 
 export const ContactFilter = () => {
-  const filterValue = useSelector(state => state.filter);
+  const filterValue = useSelector(getFilterValue);
   const dispatch = useDispatch();
 
   const handleFilterValueChange = ({ currentTarget }) =>

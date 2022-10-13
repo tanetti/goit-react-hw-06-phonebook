@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { sortContacts, normalizeFilterValue, normalizeNumber } from 'utils';
+import { getContactsData } from 'redux/contactsSlice';
+import { getFilterValue } from 'redux/filterSlice';
 import { theme } from 'constants/theme';
 import { Contact } from './Contact/Contact';
 import {
@@ -19,8 +21,8 @@ import {
 } from './ContactsList.styled';
 
 export const ContactsList = () => {
-  const contacts = useSelector(state => state.contacts);
-  const filter = useSelector(state => state.filter);
+  const contacts = useSelector(getContactsData);
+  const filter = useSelector(getFilterValue);
 
   const [sortField, setSortField] = useState('name');
   const [isSortOrderASC, setIsSortOrderASC] = useState({

@@ -1,14 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage';
 import { nanoid } from 'nanoid';
 import { truncateInnerWhitespaces } from 'utils';
 
 const contactsSlice = createSlice({
   name: 'contacts',
-  initialState: [],
+  initialState: { data: [] },
   reducers: {
     addContact: {
       reducer(state, action) {
-        state.push(action.payload);
+        state.data.push(action.payload);
       },
       prepare(newContactData) {
         return {
@@ -21,10 +23,23 @@ const contactsSlice = createSlice({
       },
     },
     removeContact(state, action) {
-      return state.filter(contact => contact.id !== action.payload.contactID);
+      state.data = state.data.filter(
+        contact => contact.id !== action.payload.contactID
+      );
     },
   },
 });
 
-export const contactsReducer = contactsSlice.reducer;
+const persistConfig = {
+  key: 'phonebook',
+  storage,
+};
+
+export const persistedContactsReducer = persistReducer(
+  persistConfig,
+  contactsSlice.reducer
+);
+
 export const { addContact, removeContact } = contactsSlice.actions;
+
+export const getContactsData = state => state.contacts.data;

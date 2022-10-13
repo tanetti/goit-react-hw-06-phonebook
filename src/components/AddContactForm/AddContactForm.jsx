@@ -1,6 +1,6 @@
 import { Formik } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from 'redux/contactsSlice';
+import { addContact, getContactsData } from 'redux/contactsSlice';
 import { Notify } from 'notiflix';
 import { createNewValidationSchema } from 'utils';
 import { theme } from 'constants/theme';
@@ -17,7 +17,7 @@ import {
 } from './AddContactForm.styled';
 
 export const AddContactForm = ({ onClose }) => {
-  const contacts = useSelector(state => state.contacts);
+  const contacts = useSelector(getContactsData);
   const dispatch = useDispatch();
 
   const validationSchema = createNewValidationSchema(contacts);
