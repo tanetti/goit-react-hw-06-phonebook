@@ -1,4 +1,7 @@
 import PropTypes from 'prop-types';
+import { Notify } from 'notiflix';
+import { useDispatch } from 'react-redux';
+import { removeContact } from 'redux/contactsSlice';
 import { SafeButton, UnsafeButton } from 'components/Shared';
 import { theme, transitionDuration } from 'constants/theme';
 import {
@@ -8,11 +11,17 @@ import {
   ButtonContainer,
 } from './DeleteContactPrompt.styled';
 
-export const DeleteContactPrompt = ({ id, name, onContactDelete, onClose }) => {
+export const DeleteContactPrompt = ({ id, name, onClose }) => {
+  const dispatch = useDispatch();
+
   const onDeleteButtonClick = () => {
     onClose();
 
-    setTimeout(() => onContactDelete(id), transitionDuration);
+    setTimeout(() => {
+      dispatch(removeContact({ contactID: id }));
+
+      Notify.success(`Contact was successfully deleted`);
+    }, transitionDuration);
   };
 
   return (
@@ -36,5 +45,4 @@ export const DeleteContactPrompt = ({ id, name, onContactDelete, onClose }) => {
 DeleteContactPrompt.propTypes = {
   id: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  onContactDelete: PropTypes.func.isRequired,
 };

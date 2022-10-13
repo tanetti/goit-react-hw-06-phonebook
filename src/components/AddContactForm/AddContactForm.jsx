@@ -1,7 +1,8 @@
-import PropTypes from 'prop-types';
 import { Formik } from 'formik';
-import { nanoid } from 'nanoid';
-import { createNewValidationSchema, truncateInnerWhitespaces } from 'utils';
+import { useDispatch, useSelector } from 'react-redux';
+import { addContact } from 'redux/contactsSlice';
+import { Notify } from 'notiflix';
+import { createNewValidationSchema } from 'utils';
 import { theme } from 'constants/theme';
 import { SafeButton, UnsafeButton } from 'components/Shared';
 import {
@@ -15,15 +16,16 @@ import {
   ErrorMessageField,
 } from './AddContactForm.styled';
 
-export const AddContactForm = ({ contacts, onNewContactAdd, onClose }) => {
+export const AddContactForm = ({ onClose }) => {
+  const contacts = useSelector(state => state.contacts);
+  const dispatch = useDispatch();
+
   const validationSchema = createNewValidationSchema(contacts);
 
-  const onNewContactSubmit = newContact => {
-    onNewContactAdd({
-      id: nanoid(14),
-      name: truncateInnerWhitespaces(newContact.name),
-      number: truncateInnerWhitespaces(newContact.number),
-    });
+  const onNewContactSubmit = newContactData => {
+    dispatch(addContact(newContactData));
+
+    Notify.success(`New contact was successfully added`);
 
     onClose();
   };
@@ -84,9 +86,4 @@ export const AddContactForm = ({ contacts, onNewContactAdd, onClose }) => {
       )}
     </Formik>
   );
-};
-
-AddContactForm.propTypes = {
-  contacts: PropTypes.array.isRequired,
-  onNewContactAdd: PropTypes.func.isRequired,
 };

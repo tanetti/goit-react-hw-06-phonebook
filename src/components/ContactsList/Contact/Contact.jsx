@@ -15,7 +15,7 @@ import {
 import { Modal } from 'components/Modal/Modal';
 import { DeleteContactPrompt } from 'components/DeleteContactPrompt/DeleteContactPrompt';
 
-export const Contact = ({ id, isLight, name, number, onContactDelete }) => {
+export const Contact = ({ id, isLight, name, number }) => {
   const [shouldDeletePromptModalShown, setShouldDeletePromptModalShown] =
     useState(false);
   const [modalActivator, setModalActivator] = useState(null);
@@ -53,11 +53,7 @@ export const Contact = ({ id, isLight, name, number, onContactDelete }) => {
             onClose={toggleDeletePromptModal}
             prevOnKeyDown={onkeydown}
           >
-            <DeleteContactPrompt
-              id={id}
-              name={name}
-              onContactDelete={onContactDelete}
-            />
+            <DeleteContactPrompt id={id} name={name} />
           </Modal>
         )}
       </TableDataCell>
@@ -84,5 +80,4 @@ Contact.propTypes = {
   isLight: PropTypes.bool.isRequired,
   name: PropTypes.string.isRequired,
   number: PropTypes.string.isRequired,
-  onContactDelete: PropTypes.func.isRequired,
 };

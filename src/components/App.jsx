@@ -1,8 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import { Notify } from 'notiflix';
 import { GlobalStyles } from 'components/GlobalStyles/GlobalStyles';
 import { theme } from 'constants/theme';
-import { readContactsFromLS, writeContactsToLS } from 'utils';
 import { PageTitle } from 'components/PageTitle/PageTitle';
 import { Section, Container } from 'components/Shared';
 import {
@@ -33,26 +32,9 @@ Notify.init({
 });
 
 export const App = () => {
-  const [contacts, setContacts] = useState([]);
-  const [filter, setFilter] = useState('');
   const [shouldAddContactModalShown, setShouldAddContactModalShown] =
     useState(false);
   const [modalActivator, setModalActivator] = useState(null);
-
-  const isContactsLoadedFromLS = useRef(false);
-
-  useEffect(() => {
-    const savedContacts = readContactsFromLS();
-
-    savedContacts && setContacts(savedContacts);
-    isContactsLoadedFromLS.current = true;
-  }, []);
-
-  useEffect(() => {
-    if (!isContactsLoadedFromLS.current) return;
-
-    if (contacts.length) writeContactsToLS(contacts);
-  }, [contacts]);
 
   const toggleAddContactModal = evt => {
     toggleAriaExpanded(evt ? evt.currentTarget : modalActivator);
@@ -66,26 +48,12 @@ export const App = () => {
     target.ariaExpanded = false;
   };
 
-  const addNewContact = newContact => {
-    setContacts(prevContacts => [...prevContacts, newContact]);
-
-    Notify.success(`New contact was successfully added`);
-  };
-
-  const deleteContact = id => {
-    setContacts(prevContacts =>
-      prevContacts.filter(contact => contact.id !== id)
-    );
-
-    Notify.success(`Contact was successfully deleted`);
-  };
-
   return (
     <>
       <GlobalStyles />
       <header>
         <HeaderContainer>
-          <ContactFilter onFilterChange={setFilter} />
+          <ContactFilter />
           <AddContactButton
             type="button"
             aria-label="Add new contact"
@@ -102,10 +70,7 @@ export const App = () => {
               onClose={toggleAddContactModal}
               prevOnKeyDown={onkeydown}
             >
-              <AddContactForm
-                contacts={contacts}
-                onNewContactAdd={addNewContact}
-              />
+              <AddContactForm />
             </Modal>
           )}
         </HeaderContainer>
@@ -116,11 +81,7 @@ export const App = () => {
         <Section>
           <Container>
             <SectionTitle>Phonebook</SectionTitle>
-            <ContactsList
-              contacts={contacts}
-              filter={filter}
-              onContactDelete={deleteContact}
-            />
+            <ContactsList />
           </Container>
         </Section>
       </main>

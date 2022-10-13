@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
 import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { sortContacts, normalizeFilterValue, normalizeNumber } from 'utils';
 import { theme } from 'constants/theme';
 import { Contact } from './Contact/Contact';
@@ -18,7 +18,10 @@ import {
   NoResultsIcon,
 } from './ContactsList.styled';
 
-export const ContactsList = ({ contacts, filter, onContactDelete }) => {
+export const ContactsList = () => {
+  const contacts = useSelector(state => state.contacts);
+  const filter = useSelector(state => state.filter);
+
   const [sortField, setSortField] = useState('name');
   const [isSortOrderASC, setIsSortOrderASC] = useState({
     name: true,
@@ -29,7 +32,9 @@ export const ContactsList = ({ contacts, filter, onContactDelete }) => {
     const normalizedFilterValue = normalizeFilterValue(filter);
     const prepearedContacts = [];
 
-    contacts
+    const contactsData = [...contacts];
+
+    contactsData
       .sort(sortContacts(sortField, isSortOrderASC[sortField]))
       .forEach(contact => {
         const normalizedName = contact.name.toLowerCase();
@@ -118,7 +123,6 @@ export const ContactsList = ({ contacts, filter, onContactDelete }) => {
                 name={name}
                 number={number}
                 isLight={idx % 2 === 0}
-                onContactDelete={onContactDelete}
               />
             ))
           ) : filter ? (
@@ -144,10 +148,4 @@ export const ContactsList = ({ contacts, filter, onContactDelete }) => {
       </ContactsTable>
     </ContactsTableBox>
   );
-};
-
-ContactsList.propTypes = {
-  contacts: PropTypes.array.isRequired,
-  filter: PropTypes.string.isRequired,
-  onContactDelete: PropTypes.func.isRequired,
 };

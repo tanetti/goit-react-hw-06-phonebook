@@ -1,5 +1,5 @@
-import PropTypes from 'prop-types';
-import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateFilterValue } from 'redux/filterSlice';
 import { theme } from 'constants/theme';
 import {
   FilterContainer,
@@ -7,20 +7,17 @@ import {
   FilterIcon,
 } from './ContactFilter.styled';
 
-export const ContactFilter = ({ onFilterChange }) => {
-  const [filterValue, setFilterValue] = useState('');
+export const ContactFilter = () => {
+  const filterValue = useSelector(state => state.filter);
+  const dispatch = useDispatch();
 
-  useEffect(() => {
-    onFilterChange(filterValue);
-  }, [filterValue, onFilterChange]);
-
-  const updateFilterValue = ({ currentTarget }) =>
-    setFilterValue(currentTarget.value);
+  const handleFilterValueChange = ({ currentTarget }) =>
+    dispatch(updateFilterValue({ filterValue: currentTarget.value }));
 
   const onEscPress = ({ code }) => {
     if (code !== 'Escape') return;
 
-    setFilterValue('');
+    dispatch(updateFilterValue({ filterValue: '' }));
   };
 
   onkeydown = onEscPress;
@@ -33,13 +30,9 @@ export const ContactFilter = ({ onFilterChange }) => {
         aria-label="Phonebook filter"
         placeholder="Filtered Search"
         value={filterValue}
-        onChange={updateFilterValue}
+        onChange={handleFilterValueChange}
       />
       <FilterIcon size={theme.sizes.filterFieldIcon} />
     </FilterContainer>
   );
-};
-
-ContactFilter.propTypes = {
-  onFilterChange: PropTypes.func.isRequired,
 };
